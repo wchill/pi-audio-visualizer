@@ -34,15 +34,15 @@ atexit.register(end_early)
 
 
 # Raspberry Pi configuration:
-lcd_rs = 25  # Change this to pin 21 on older revision Raspberry Pi's
-lcd_en = 24
-lcd_d4 = 23
-lcd_d5 = 18
-lcd_d6 = 15
-lcd_d7 = 14
-lcd_red   = 21
+lcd_rs = 14  # Change this to pin 21 on older revision Raspberry Pi's
+lcd_en = 15
+lcd_d4 = 18
+lcd_d5 = 23
+lcd_d6 = 24
+lcd_d7 = 25
+lcd_red   = 16
 lcd_green = 20
-lcd_blue  = 16
+lcd_blue  = 21
 
 # Alternatively specify a 20x4 LCD.
 lcd_columns = 20
