@@ -2,8 +2,6 @@
 
 import atexit
 import os
-import random
-import subprocess
 import sys
 import wave
 import alsaaudio as aa
@@ -12,8 +10,6 @@ import decoder
 import numpy as np
 
 import fft
-
-import Adafruit_CharLCD as LCD
 
 _MIN_FREQUENCY = 20
 _MAX_FREQUENCY = 10000
@@ -99,11 +95,6 @@ def play_song(song_filename):
 
     sample_rate = music_file.getframerate()
     num_channels = music_file.getnchannels()
-    output = aa.PCM(aa.PCM_PLAYBACK, aa.PCM_NORMAL)
-    output.setchannels(num_channels)
-    output.setrate(sample_rate)
-    output.setformat(aa.PCM_FORMAT_S16_LE)
-    output.setperiodsize(CHUNK_SIZE)
 
     print("Playing: " + song_filename + " (" + str(music_file.getnframes() / sample_rate)
                  + " sec)")
@@ -154,8 +145,9 @@ def play_song(song_filename):
     # timer
     frames_played = 0
 
+    yield num_channels, sample_rate
+
     while data != '':
-        output.write(data)
 
         # Control lights with cached timing values if they exist
         matrix = None
@@ -176,7 +168,7 @@ def play_song(song_filename):
 
         frames_played += len(data) / 4
 
-        yield output, frames_played, update_lights(matrix, mean, std)
+        yield data, frames_played, total_frames, sample_rate, update_lights(matrix, mean, std)
 
         # Read next chunk of data from music song_filename
         data = music_file.readframes(CHUNK_SIZE)
@@ -194,7 +186,3 @@ def play_song(song_filename):
 
         # Save the cache using numpy savetxt
         np.savetxt(cache_filename, cache_matrix)
-
-
-if __name__ == "__main__":
-    play_song('sample.mp3')
