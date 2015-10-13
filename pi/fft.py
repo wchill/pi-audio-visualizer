@@ -85,4 +85,24 @@ def calculate_levels(data, chunk_size, sample_rate, frequency_limits, num_bins, 
         # perceive sound levels
 
         # Get the power array index corresponding to a particular frequency.
-        idx1 = int(chunk_size * frequency_limits[pin][0] / sample_r
+        idx1 = int(chunk_size * frequency_limits[pin][0] / sample_rate)
+        idx2 = int(chunk_size * frequency_limits[pin][1] / sample_rate)
+
+        # if index1 is the same as index2 the value is an invalid value
+        # we can fix this by incrementing index2 by 1, This is a temporary fix
+        # for RuntimeWarning: invalid value encountered in double_scalars
+        # generated while calculating the standard deviation.  This warning
+        # results in some channels not lighting up during playback.
+        if idx1 == idx2:
+            idx2 += 1
+
+        npsums = npsum(power[idx1:idx2:1])
+
+        # if the sum is 0 lets not take log10, just use 0
+        # eliminates RuntimeWarning: divide by zero encountered in log10, does not insert -inf
+        if npsums == 0:
+            matrix[pin] = 0
+        else:
+            matrix[pin] = log10(npsums)
+
+    return matrix

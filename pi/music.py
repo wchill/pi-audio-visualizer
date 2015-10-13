@@ -214,7 +214,7 @@ def play_song(song_filename):
 
         # Control lights with cached timing values if they exist
         matrix = None
-        if cache_found and args.readcache:
+        if cache_found:
             if row < len(cache_matrix):
                 matrix = cache_matrix[row]
             else:
